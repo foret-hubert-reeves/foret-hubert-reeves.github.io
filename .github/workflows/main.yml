@@ -1,0 +1,10 @@
+on:
+  workflow_dispatch:
+jobs:
+  my_job:
+    name: TEST
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: ECHO
+        run: echo HELLO WORLD
