@@ -6,5 +6,5 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: ECHO
-        run: echo HELLO WORLD
+      - name: TOUCH
+        run: pwd | ls | touch text.txt | ls
