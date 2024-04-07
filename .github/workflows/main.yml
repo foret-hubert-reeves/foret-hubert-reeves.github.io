@@ -7,4 +7,4 @@ jobs:
     
     steps:
       - name: TOUCH
-        run: pwd | ls | touch text.txt | ls
+        run: pwd | ls | touch text2.txt | ls
