@@ -35,6 +35,11 @@ const auth = getAuth();
 
 
 function getGinko() {
+    e.preventDefault();
+    grecaptcha.enterprise.ready(async () => {
+        const token = await grecaptcha.enterprise.execute('6LcWyrQpAAAAAGEV9ae5SLloyPnM7rdJfM2klN8P', { action: 'LOGIN' });
+    });
+    
     signInAnonymously(auth)
         .then(async () => {
             const db = getFirestore(app);
