@@ -35,10 +35,12 @@ const auth = getAuth();
 
 
 function getGinko() {
-    e.preventDefault();
-    grecaptcha.enterprise.ready(async () => {
-        const token = await grecaptcha.enterprise.execute('6LcWyrQpAAAAAGEV9ae5SLloyPnM7rdJfM2klN8P', { action: 'LOGIN' });
-    });
+    // e.preventDefault();
+    // grecaptcha.enterprise.ready(async () => {
+    //     const token = await grecaptcha.enterprise.execute('6LcWyrQpAAAAAGEV9ae5SLloyPnM7rdJfM2klN8P', { action: 'LOGIN' });
+    // });
+
+    wwd.goTo(new WorldWind.Position(46.603354, 1.888334, 1e7));
     
     signInAnonymously(auth)
         .then(async () => {
@@ -77,7 +79,6 @@ function getGinko() {
                 console.log(ginko.first_name);
             });
 
-            wwd.goTo(new WorldWind.Position(46.603354, 1.888334, 1e7));
         })
         .catch((error) => {
             const errorCode = error.code;
