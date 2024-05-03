@@ -193,7 +193,7 @@ function getGinko() {
                     return viewer.entities.add({
                         name: ginko.first_name,
                         //place the pin on the ground
-                        position: Cesium.Cartesian3.fromDegrees(ginko.coord.longitude, ginko.coord.latitude, 1000),
+                        position: Cesium.Cartesian3.fromDegrees(ginko.coord.longitude, ginko.coord.latitude, 1),
                         billboard: {
                             image: canvas.toDataURL(),
                             verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
@@ -215,4 +215,4 @@ function getGinko() {
 getGinko();
 
 //focus on France
-flyTo(Cesium.Cartesian3.fromDegrees(2.213749, 46.227638, 1000), viewer);
+flyTo(Cesium.Cartesian3.fromDegrees(2.213749, 46.227638, 1), viewer);
