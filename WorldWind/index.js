@@ -9,7 +9,7 @@ wwd.addLayer(new WorldWind.BMNGLandsatLayer());
 wwd.addLayer(new WorldWind.CoordinatesDisplayLayer(wwd));
 wwd.addLayer(new WorldWind.ViewControlsLayer(wwd));
 
-import { app, analytics, auth, getFirestore, collection, getDocs, signInAnonymously } from "./firestore.js";
+import { app, analytics, auth, getFirestore, collection, getDocs, signInAnonymously } from "../firestore.js";
 
 
 // const button = document.getElementById("button");
