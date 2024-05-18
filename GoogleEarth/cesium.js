@@ -117,7 +117,7 @@ const DrawLabel = (newPosition, id) => {
     CurrentLabel = viewer.entities.add({
         position: newPosition,
         label: {
-            text: db[id].first_name + " " + db[id].last_name+".",
+            text: db[id].first_name + " " + db[id].last_name,
             disableDepthTestDistance: Number.POSITIVE_INFINITY,
             pixelOffset: new Cesium.Cartesian2(0, -50),
             showBackground: true,
