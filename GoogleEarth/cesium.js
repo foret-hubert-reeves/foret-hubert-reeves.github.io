@@ -172,10 +172,7 @@ viewer.selectedEntityChanged.addEventListener(function (selectedEntity) {
 
             DrawLabel(pos, selectedEntity.name);
 
-            // console.log('Selected ' + selectedEntity.description);
-            // zoomIn(pos, viewer);
             zoomIn(pos, viewer);
-
 
             //Get PHOTO
             DrawPhoto(pos, selectedEntity.name);
@@ -185,12 +182,15 @@ viewer.selectedEntityChanged.addEventListener(function (selectedEntity) {
         }
     } else {
         console.log('Deselected.');
+
+        flyTo(CurrentLabel.position.getValue(), viewer);
+        
         if (Cesium.defined(CurrentLabel))
             viewer.entities.remove(CurrentLabel);
         if (Cesium.defined(CurrentPhoto))
             viewer.entities.remove(CurrentPhoto);
+
         viewer.selectedEntity = undefined;
-        //remove rotate center point
     }
 });
 
