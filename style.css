@@ -22,3 +22,7 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.cesium-infoBox-camera {
+    display: none;
+}

@@ -1,6 +1,6 @@
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4ODE1NTVjOS02MzI1LTQ4NTUtYmJmNS1kODAxNzRmODY2MjkiLCJpZCI6MjEyNDExLCJpYXQiOjE3MTQ1NTY2OTJ9.AdHjdw06R4rgVm81B7cQNg58keOWnqnzJbL1vh63hDU';
 
-let storage, getDownloadURL, ref, db;
+let storage, getDownloadURL, ref, db, rotate;
 
 await import("../firestore.js")
     .then((module) => {
@@ -16,11 +16,9 @@ await import("../firestore.js")
 const viewer = new Cesium.Viewer('cesiumContainer', {
     //Terrain is ellipsoid
     terrain: Cesium.EllipsoidTerrainProvider(),
-    // imageryProvider: false,
     // baseLayerPicker: false,
     requestRenderMode: true,
     geocoder: false,
-    // globe: false,
     depthTestAgainstTerrain: false,
     //hide ui
     animation: false,
@@ -29,11 +27,20 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
     vrButton: false,
     // homeButton: false,
     sceneModePicker: false,
-    // navigationHelpButton: false,
-    navigationInstructionsInitiallyVisible: false,
+    navigationInstructionsInitiallyVisible: true,
     // selectionIndicator: false,
-    infoBox: false,
+    // infoBox: false,
+    scene3DOnly: true,
+    // requestRenderMode: true,
+    useBrowserRecommendedResolution: true,
 });
+
+viewer.forceResize();
+viewer.resolutionScale = 1.0;
+viewer.infoBox.viewModel.enableCamera = true;
+viewer.scene.screenSpaceCameraController.minimumZoomDistance = 1000;
+viewer.scene.screenSpaceCameraController.enableTilt = false;
+// viewer.scene.screenSpaceCameraController.enableRotate = false;
 
 // Add Cesium OSM Buildings, a global 3D buildings layer.
 // const buildingTileset = await Cesium.createOsmBuildingsAsync();
@@ -67,18 +74,15 @@ const flyTo = (pos) => {
 }
 
 const zoomIn = (pos) => {
-    const origMagnitude = Cesium.Cartesian3.magnitude(pos);
-    const verticalAmount = 5000;
-    const newMagnitude = origMagnitude + verticalAmount;
-    const scalar = newMagnitude / origMagnitude;
+    const transform = Cesium.Transforms.eastNorthUpToFixedFrame(pos);
+    let headingPitchRange = new Cesium.HeadingPitchRange(0, -Math.PI / 8, 290)
 
-    const newPosition = new Cesium.Cartesian3();
-    Cesium.Cartesian3.multiplyByScalar(pos, scalar, newPosition);
-
-    viewer.camera.flyTo({
-        destination: newPosition,
-        duration: 1,
-    });
+    // viewer.camera.flyTo({
+    //     destination: Cesium.Cartesian3.add(pos, offset, new Cesium.Cartesian3()),
+    //     duration: 1,
+    // });
+    
+    viewer.scene.camera.lookAt(pos, headingPitchRange);
 
 }
 
@@ -92,10 +96,9 @@ function addPins(ginkos) {
         ).then(function (canvas) {
 
             let ginko = ginkos[id];
-            console.log(ginko);
             //PIN
             return viewer.entities.add({
-                description: ginko.photo,
+                // description: '<h1>No Image</h1>',
                 name: id,
                 //place the pin on the ground
                 position: Cesium.Cartesian3.fromDegrees(ginko.coord.longitude, ginko.coord.latitude, 1),
@@ -126,24 +129,23 @@ const DrawLabel = (newPosition, id) => {
     });
 };
 
-const DrawPhoto = (pos, id) => {
+const DrawPhoto = (pos, selectedEntity) => {
+    selectedEntity.description = '<h1>No Image</h1>';
+    let id = selectedEntity.name;
     if (storage != null && db[id].photo != null) {
         getDownloadURL(ref(storage, 'images/' + db[id].photo))
             .then((url) => {
-                CurrentPhoto = viewer.entities.add({
-                    position: pos,
-                    billboard: {
-                        image: url,
-                        scale: 0.05,
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                        pixelOffset: new Cesium.Cartesian2(0, -100),
-                    },
-                });
+                selectedEntity.description = 
+                '<div><img width="100%" src="' + url +'"></img></div>\
+                <style>div {min-height: 100vw }\
+                ';
             })
             .catch((error) => {
+                // selectedEntity.description = '<h1>No Image</h1>';
                 console.log(error);
             });
     }
+    // else selectedEntity.description = '<h1>No Image</h1>';
 
     //PHOTO
     // else {
@@ -174,8 +176,15 @@ viewer.selectedEntityChanged.addEventListener(function (selectedEntity) {
 
             zoomIn(pos, viewer);
 
+            // Orbit this point
+            if(rotate!=null) rotate();
+            rotate = viewer.clock.onTick.addEventListener(function (clock) {
+                viewer.scene.camera.rotateRight(0.001);
+            });
+
             //Get PHOTO
-            DrawPhoto(pos, selectedEntity.name);
+            if (selectedEntity.description == null)
+            DrawPhoto(pos, selectedEntity);
 
         } else {
             console.log('Unknown entity selected.');
@@ -190,7 +199,12 @@ viewer.selectedEntityChanged.addEventListener(function (selectedEntity) {
         if (Cesium.defined(CurrentPhoto))
             viewer.entities.remove(CurrentPhoto);
 
+        // Orbit this point
+        rotate();
+
         viewer.selectedEntity = undefined;
+
+        viewer.camera.lookAtTransform(Cesium.Matrix4.IDENTITY);
     }
 });
 

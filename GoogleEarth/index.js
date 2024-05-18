@@ -37,6 +37,7 @@ await import("../env.js")
     });
 
 
+
 // const tileset = viewer.scene.primitives.add(
 //     new Cesium.Cesium3DTileset({
 //         url: "https://tile.googleapis.com/v1/3dtiles/root.json?key=" + MapKey,
@@ -54,7 +55,8 @@ function getFirebaseGinko() {
             //all to json
             let ginkos = {};
             await querySnapshot.docs.forEach((doc) => {
-                ginkos[doc.id] = doc.data();
+                let data = doc.data();
+                ginkos[data.first_name+" "+data.last_name] = data;
             });
             addPins(ginkos);
         })
