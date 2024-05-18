@@ -1,6 +1,6 @@
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4ODE1NTVjOS02MzI1LTQ4NTUtYmJmNS1kODAxNzRmODY2MjkiLCJpZCI6MjEyNDExLCJpYXQiOjE3MTQ1NTY2OTJ9.AdHjdw06R4rgVm81B7cQNg58keOWnqnzJbL1vh63hDU';
 
-let storage, getDownloadURL, ref, db, rotate;
+let storage, getDownloadURL, ref, db, rotate, scale;
 
 await import("../firestore.js")
     .then((module) => {
@@ -23,9 +23,9 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
     //hide ui
     animation: false,
     timeline: false,
-    fullscreenButton: false,
+    fullscreenButton: true,
     vrButton: false,
-    // homeButton: false,
+    homeButton: false,
     sceneModePicker: false,
     navigationInstructionsInitiallyVisible: true,
     // selectionIndicator: false,
@@ -36,11 +36,20 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
 });
 
 viewer.forceResize();
-viewer.resolutionScale = 1.0;
+viewer.resolutionScale = 1;
+if (isMobileDevice()) {
+    scale = window.innerWidth / 500;
+}
+else {
+    scale = 1;
+}
+
+function isMobileDevice() {
+    return /Mobi|Android/i.test(navigator.userAgent);
+}
 viewer.infoBox.viewModel.enableCamera = true;
 viewer.scene.screenSpaceCameraController.minimumZoomDistance = 1000;
 viewer.scene.screenSpaceCameraController.enableTilt = false;
-// viewer.scene.screenSpaceCameraController.enableRotate = false;
 
 // Add Cesium OSM Buildings, a global 3D buildings layer.
 // const buildingTileset = await Cesium.createOsmBuildingsAsync();
@@ -105,8 +114,8 @@ function addPins(ginkos) {
                 billboard: {
                     image: canvas.toDataURL(),
                     verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                    show: true
-                    // eyeOffset: new Cesium.Cartesian3(0, 0, -1000000),
+                    show: true,
+                    scale: scale,
                 },
             });
         });
