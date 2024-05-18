@@ -1,5 +1,5 @@
 *DS_Store
-.env
+env.js
 *.json
 *copy*
 trash/
@@ -7,3 +7,6 @@ firebase/
 localkeys
 functions/
 *.log
+
+demo/
+src/
