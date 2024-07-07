@@ -35,17 +35,7 @@ await import("../env.js")
         MapKey = "AIzaSyAKghInYGx9TlGfhxmxy_VuAG-SfML2N8Q";
         local = false;
     });
-
-
-
-// const tileset = viewer.scene.primitives.add(
-//     new Cesium.Cesium3DTileset({
-//         url: "https://tile.googleapis.com/v1/3dtiles/root.json?key=" + MapKey,
-
-//         // This property is required to display attributions as required.
-//         showCreditsOnScreen: true,
-//     })
-// );
+console.log(MapKey);
 
 function getFirebaseGinko() {
     signInAnonymously(auth)

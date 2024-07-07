@@ -2,23 +2,28 @@ Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOi
 
 let storage, getDownloadURL, ref, db, rotate, scale;
 
-await import("../firestore.js")
+let MapKey, local;
+
+await import("../env.js")
     .then((module) => {
-        storage = module.storage;
-        getDownloadURL = module.getDownloadURL;
-        ref = module.ref;
+        MapKey = module.MapKey;
+        local = true;
     })
     .catch((error) => {
-        // console.log(error);
+        console.log(error);
+        MapKey = "AIzaSyAKghInYGx9TlGfhxmxy_VuAG-SfML2N8Q";
+        local = false;
     });
 
 // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
 const viewer = new Cesium.Viewer('cesiumContainer', {
     //Terrain is ellipsoid
     terrain: Cesium.EllipsoidTerrainProvider(),
+    // imageryProvider: false,
     // baseLayerPicker: false,
     requestRenderMode: true,
     geocoder: false,
+    // globe: false,
     depthTestAgainstTerrain: false,
     //hide ui
     animation: false,
@@ -28,12 +33,13 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
     homeButton: false,
     sceneModePicker: false,
     navigationInstructionsInitiallyVisible: true,
-    // selectionIndicator: false,
+    selectionIndicator: false,
     // infoBox: false,
     scene3DOnly: true,
-    // requestRenderMode: true,
+    requestRenderMode: true,
     useBrowserRecommendedResolution: true,
 });
+
 
 viewer.forceResize();
 viewer.resolutionScale = 1;
@@ -57,7 +63,19 @@ viewer.scene.screenSpaceCameraController.enableTilt = false;
 
 // GOOGLE 
 // Enable simultaneous requests.
-// Cesium.RequestScheduler.requestsByServer["tile.googleapis.com:443"] = 18;
+Cesium.RequestScheduler.requestsByServer["tile.googleapis.com:443"] = 18;
+
+// Add 3D Tiles tileset.
+const tileset = viewer.scene.primitives.add(
+    new Cesium.Cesium3DTileset({
+        url: "https://tile.googleapis.com/v1/3dtiles/root.json?key=" + MapKey,
+
+        // This property is required to display attributions as required.
+        showCreditsOnScreen: false,
+    })
+);
+//disactivate the tileset
+tileset.show = false;
 
 
 let CurrentLabel, CurrentPhoto;
@@ -80,11 +98,13 @@ const flyTo = (pos) => {
         destination: newPosition,
         duration: 1,
     });
+
+    tileset.show = false;
 }
 
 const zoomIn = (pos) => {
     const transform = Cesium.Transforms.eastNorthUpToFixedFrame(pos);
-    let headingPitchRange = new Cesium.HeadingPitchRange(0, -Math.PI / 8, 290)
+    let headingPitchRange = new Cesium.HeadingPitchRange(0, -Math.PI / 8, 1000)
 
     // viewer.camera.flyTo({
     //     destination: Cesium.Cartesian3.add(pos, offset, new Cesium.Cartesian3()),
@@ -93,6 +113,7 @@ const zoomIn = (pos) => {
     
     viewer.scene.camera.lookAt(pos, headingPitchRange);
 
+    tileset.show = true;
 }
 
 //Add pins
@@ -184,6 +205,7 @@ viewer.selectedEntityChanged.addEventListener(function (selectedEntity) {
             DrawLabel(pos, selectedEntity.name);
 
             zoomIn(pos, viewer);
+
 
             // Orbit this point
             if(rotate!=null) rotate();
