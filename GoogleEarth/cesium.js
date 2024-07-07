@@ -15,6 +15,16 @@ await import("../env.js")
         local = false;
     });
 
+await import("../firestore.js")
+    .then((module) => {
+        storage = module.storage;
+        getDownloadURL = module.getDownloadURL;
+        ref = module.ref;
+    })
+    .catch((error) => {
+        // console.log(error);
+    });
+
 // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
 const viewer = new Cesium.Viewer('cesiumContainer', {
     //Terrain is ellipsoid
@@ -160,8 +170,10 @@ const DrawLabel = (newPosition, id) => {
 };
 
 const DrawPhoto = (pos, selectedEntity) => {
+
     selectedEntity.description = '<h1>No Image</h1>';
     let id = selectedEntity.name;
+    console.log(storage, db[id].photo);
     if (storage != null && db[id].photo != null) {
         getDownloadURL(ref(storage, 'images/' + db[id].photo))
             .then((url) => {
@@ -169,6 +181,7 @@ const DrawPhoto = (pos, selectedEntity) => {
                 '<div><img width="100%" src="' + url +'"></img></div>\
                 <style>div {min-height: 100vw }\
                 ';
+                console.log(url);
             })
             .catch((error) => {
                 // selectedEntity.description = '<h1>No Image</h1>';

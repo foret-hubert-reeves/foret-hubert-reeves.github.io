@@ -23,19 +23,16 @@ await import("../firestore.js")
 
 // Add 3D Tiles tileset.
 // verifie if env.js exists
-let MapKey, ginkos, local;
+let ginkos, local;
 
 await import("../env.js")
     .then((module) => {
-        MapKey = module.MapKey;
         ginkos = module.ginkos;
         local = true;
     })
     .catch((error) => {
-        MapKey = "AIzaSyAKghInYGx9TlGfhxmxy_VuAG-SfML2N8Q";
         local = false;
     });
-console.log(MapKey);
 
 function getFirebaseGinko() {
     signInAnonymously(auth)
