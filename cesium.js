@@ -4,7 +4,7 @@ let storage, getDownloadURL, ref, db, rotate, scale;
 
 let MapKey, local;
 
-await import("../env.js")
+await import("./env.js")
     .then((module) => {
         MapKey = module.MapKey;
         local = true;
@@ -15,7 +15,7 @@ await import("../env.js")
         local = false;
     });
 
-await import("../firestore.js")
+await import("./firestore.js")
     .then((module) => {
         storage = module.storage;
         getDownloadURL = module.getDownloadURL;
@@ -195,7 +195,7 @@ const DrawPhoto = (pos, selectedEntity) => {
     //     CurrentPhoto = viewer.entities.add({
     //         position: pos,
     //         billboard: {
-    //             image: "../ginkgo.png",
+    //             image: "./ginkgo.png",
     //             scale: 1,
     //             verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
     //             pixelOffset: new Cesium.Cartesian2(0, -50),

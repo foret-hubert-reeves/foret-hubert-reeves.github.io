@@ -4,7 +4,7 @@ import { viewer, flyTo, addPins } from "./cesium.js";
 //Fire Store 
 let app, analytics, auth, getFirestore, collection, getDocs, signInAnonymously, storage, getDownloadURL, ref;
 
-await import("../firestore.js")
+await import("./firestore.js")
     .then((module) => {
         app = module.app;
         analytics = module.analytics;
@@ -25,7 +25,7 @@ await import("../firestore.js")
 // verifie if env.js exists
 let ginkos, local;
 
-await import("../env.js")
+await import("./env.js")
     .then((module) => {
         ginkos = module.ginkos;
         local = true;

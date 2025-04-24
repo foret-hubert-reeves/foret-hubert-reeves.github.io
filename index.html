@@ -1,17 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <title>Forêt Hubert Reeves</title>
+  <meta charset="utf-8"
+  name="Forêt Huber Reeves" 
+  content="Un site web à la mémoire de l'astrophysicien Hubert Reeves avec les coordonnées des ginkgos plantés."/>
+  <script src="https://ajax.googleapis.com/ajax/libs/cesiumjs/1.105/Build/Cesium/Cesium.js"></script>
+  <link 
+    href="https://ajax.googleapis.com/ajax/libs/cesiumjs/1.105/Build/Cesium/Widgets/widgets.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" type="text/css" href="./style.css" />
+  <!-- <script src="./firestore.js" type="module"></script> -->
 </head>
-<script>
-    function goToDefault() {
-        window.location.href = "./GoogleEarth/index.html";
-    }
-</script>
-
-<body onload="goToDefault()"></body>
-
+<body>
+  <div id="cesiumContainer"></div>
+  <script defer src="index.js" type="module"></script>
 </body>
-</html>
