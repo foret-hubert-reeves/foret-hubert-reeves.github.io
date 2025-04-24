@@ -31,6 +31,9 @@ const viewer = new Cesium.Viewer('cesiumContainer', {
     terrain: Cesium.EllipsoidTerrainProvider(),
     // imageryProvider: false,
     // baseLayerPicker: false,
+    baseLayer: Cesium.ImageryLayer.fromWorldImagery({
+        style: Cesium.IonWorldImageryStyle.AERIAL_WITH_LABELS,
+    }),
     requestRenderMode: true,
     geocoder: false,
     // globe: false,
