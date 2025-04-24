@@ -1,2 +1,2 @@
 DirectoryIndex index.html
-ErrorDocument 404 /index.html
+ErrorDocument 404 https://foret-hubert-reeves.github.io/index.html
