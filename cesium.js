@@ -172,24 +172,27 @@ const DrawLabel = (newPosition, id) => {
     });
 };
 
-const DrawPhoto = (pos, selectedEntity) => {
+const DrawPhoto = async (pos, selectedEntity) => {
 
     selectedEntity.description = '<h1>No Image</h1>';
     let id = selectedEntity.name;
     console.log(storage, db[id].photo);
-    if (storage != null && db[id].photo != null) {
-        getDownloadURL(ref(storage, 'images/' + db[id].photo))
-            .then((url) => {
-                selectedEntity.description = 
-                '<div><img width="100%" src="' + url +'"></img></div>\
-                <style>div {min-height: 100vw }\
-                ';
-                console.log(url);
-            })
-            .catch((error) => {
-                // selectedEntity.description = '<h1>No Image</h1>';
-                console.log(error);
-            });
+    if (storage != null) {
+        const photos = [db[id].photo, db[id].photo2, db[id].photo3]; // ADD MORE PHOTOS HERE
+        const downloadPromises = photos
+            .filter(photo => photo != null && photo != '')
+            .map(photo => getDownloadURL(ref(storage, 'images/' + photo)));
+
+        try {
+            const urls = await Promise.all(downloadPromises);
+            selectedEntity.description = urls
+                .map(url => `<div><img width="100%" src="${url}"></img></div>`)
+                .join('') +
+                '<style>div {min-height: 100vw }</style>';
+            console.log(urls);
+        } catch (error) {
+            console.log(error);
+        }
     }
     // else selectedEntity.description = '<h1>No Image</h1>';
 
