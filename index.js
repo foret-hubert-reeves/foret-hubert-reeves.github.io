@@ -43,7 +43,7 @@ function getFirebaseGinko() {
             let ginkos = {};
             await querySnapshot.docs.forEach((doc) => {
                 let data = doc.data();
-                ginkos[data.coord] = data;
+                ginkos[data.first_name+" "+data.last_name] = data;
             });
             addPins(ginkos);
         })
